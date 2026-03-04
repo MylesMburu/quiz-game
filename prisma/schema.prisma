@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id        Int        @id @default(autoincrement())
+  code      String     @unique
+  title     String
+  status    String     @default("waiting")
+  createdAt DateTime   @default(now())
+  questions Question[]
+  players   Player[]
+}
+
+model Question {
+  id            Int            @id @default(autoincrement())
+  gameId        Int?
+  game          Game?          @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  text          String
+  type          String
+  timeLimit     Int            @default(20)
+  order         Int            @default(0)
+  answers       Answer[]
+  playerAnswers PlayerAnswer[]
+}
+
+model Answer {
+  id            Int            @id @default(autoincrement())
+  questionId    Int
+  question      Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text          String
+  isCorrect     Boolean        @default(false)
+  playerAnswers PlayerAnswer[]
+}
+
+model Player {
+  id            Int            @id @default(autoincrement())
+  gameId        Int
+  game          Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  name          String
+  sessionId     String
+  score         Int            @default(0)
+  playerAnswers PlayerAnswer[]
+}
+
+model PlayerAnswer {
+  id         Int      @id @default(autoincrement())
+  playerId   Int
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerId   Int
+  answer     Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  timeMs     Int
+  isCorrect  Boolean  @default(false)
+}
