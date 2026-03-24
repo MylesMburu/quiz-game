@@ -40,7 +40,7 @@ A real-time multiplayer trivia game built with Next.js and Socket.io. A host cre
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/quiz-game.git
+git clone https://github.com/MylesMburu/quiz-game.git
 cd quiz-game
 npm install
 ```
